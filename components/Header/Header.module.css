@@ -1,0 +1,109 @@
+.header {
+  display: flex;
+  align-items: center;
+  margin: 20px 128px;
+  justify-content: space-between
+}
+
+.flagLogo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.flag {
+  height: 28px;
+  width: 28px;
+  background-image: linear-gradient(to bottom, #338af3 50%, #ffda44 50%);
+  border-radius: 50%;
+}
+
+.logo {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+}
+
+.clickOnMeBtn {
+  color: var(--accent-color);
+  background-color: var(--white);
+  font-size: 16px;
+  line-height: 125%;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: color 250ms ease, transform 200ms ease;
+}
+
+.clickOnMeBtn:hover {
+  color: var(--accent-next-color);
+  transform: scale(1.05);
+}
+
+.navigation {
+  display: flex;
+  gap: 28px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 125%;
+}
+
+.navigationItem {
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navigationItem:not(.isActive):hover,
+.navigationItem:not(.isActive):focus {
+  color: var(--button-hover);
+}
+
+.isActive {
+  font-weight: 700;
+}
+
+.authLink {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.LogInLink {
+  font-size: 16px;
+  line-height: 125%;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.LogInLink:hover,
+.LogInLink:focus {
+  color: var(--button-hover);
+}
+
+.iconLogIn,
+.iconLogOut {
+  fill: none;
+  stroke: var(--accent-color);
+}
+
+.registrLink {
+  border-radius: 12px;
+  padding: 14px 39px;
+  width: 166px;
+  height: 48px;
+  background: var(--main);
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 125%;
+  color: var(--white);
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.registrLink:hover,
+.registrLink:focus {
+  color: var(--button-hover);
+}

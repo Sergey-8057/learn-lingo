@@ -1,0 +1,50 @@
+:root {
+  --white: #ffffff;
+  --main: #121417;
+  --light-yellow: #fbe9ba;
+  --yellow: #f4c550;
+  --light-green: #cbded3;
+  --green: #9fbaae;
+  --light-blue: #bfd6ea;
+  --blue: #9fb7ce;
+  --light-red: #f2c0bd;
+  --red: #e0a39a;
+  --light-pink: #f4c8ba;
+  --pink: #f0aa8d;
+  --button-hover: #338af3;
+  --grey: #f8f8f8;
+  --accent-color: var(--yellow);
+  --accent-next-color: var(--green);
+  --accent-light-color: var(--light-yellow);
+  --hero-image: url('/block-1.png');
+}
+
+body {
+  color: var(--main);
+  background: var(--white);
+  font-family: var(--font-family), sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 64px;
+  margin: 0 auto;
+}
