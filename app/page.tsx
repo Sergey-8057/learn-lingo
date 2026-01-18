@@ -1,14 +1,18 @@
+'use client';
+
 import Link from 'next/link';
 
 import css from './page.module.css';
 
 export default function Home() {
+
   return (
     <>
       <section className={css.hero}>
         <div className={css.heroTitleText}>
           <h1 className={css.heroTitle}>
-            Unlock your potential with the best <span className={css.heroLanguage}>language</span>tutors
+            Unlock your potential with the best <span className={css.heroLanguage}>language</span>
+            tutors
           </h1>
           <p className={css.heroText}>
             Embark on an Exciting Language Journey with Expert Language Tutors: Elevate your

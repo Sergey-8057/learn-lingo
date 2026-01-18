@@ -59,8 +59,6 @@ const Header = () => {
     root.style.setProperty('--hero-image', `url(${themes[nextIndex].image})`);
   };
 
-
-
   useEffect(() => {
     const unsubscribe = observeAuth(setUser);
     return () => unsubscribe();
@@ -118,14 +116,14 @@ const Header = () => {
       {!user ? (
         /* 🔓 НЕ авторизован */
         <div className={css.authLink}>
-          <Link href="/login" className={css.LogInLink}>
+          <Link href="/auth/login" className={css.LogInLink}>
             <svg className={css.iconLogIn} width="20" height="20" aria-hidden="true">
               <use href="/symbol-defs.svg#icon-log-in" />
             </svg>
             Log in
           </Link>
 
-          <Link href="/register" className={css.registrLink}>
+          <Link href="/auth/register" className={css.registrLink}>
             Registration
           </Link>
         </div>
