@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
+import { AuthProvider } from '@/context/AuthContext';
 import Header from '@/components/Header/Header';
 import './globals.css';
 
@@ -27,11 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable} container`}>
-        <Header />
-        <main>
-          {children}
-          {modal}
-        </main>
+        <AuthProvider>
+          <Header />
+          <main>
+            {children}
+            {modal}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

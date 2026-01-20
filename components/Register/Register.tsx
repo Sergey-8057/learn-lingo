@@ -1,18 +1,20 @@
 'use client';
 
-import { useState} from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/navigation';
 
-import { loginSchema } from '@/validation/loginSchema';
-import { LoginFormValues } from '@/types/auth';
-import { useAuth } from '@/context/AuthContext';
+
+import { registerSchema } from '@/validation/registerSchema';
+import { RegisterFormValues } from '@/types/auth';
+import { registerUser } from '@/firebase/auth/register';
 import { getAuthErrorMessage } from '@/firebase/auth/errors';
+import { saveUserToDb } from '@/firebase/db/users';
 
-import css from './LogIn.module.css';
+import css from './Register.module.css';
 
-export default function LogIn() {
+export default function Register() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,46 +23,61 @@ export default function LogIn() {
     setShowPassword(!showPassword);
   };
 
-  const { login } = useAuth();
-
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
       setError(null);
-      await login(data.email, data.password);
+      const user = await registerUser(data.email, data.password);
+
+      await saveUserToDb(user.uid, {
+        name: data.name,
+        email: data.email,
+        favorites: [],
+      });
       router.push('/');
-      router.back();
-    } catch (err) {
-      setError(getAuthErrorMessage(err));
+      router.back();    
+    } catch (error) {
+      setError(getAuthErrorMessage(error));
     }
   };
 
   return (
     <>
-      <h2 className={css.modalTitle}>Log In</h2>
+      <h2 className={css.modalTitle}>Registration</h2>
       <p className={css.modalText}>
-        Welcome back! Please enter your credentials to access your account and continue your search
-        for an teacher.
+        Thank you for your interest in our platform! In order to register, we need some information.
+        Please provide us with the following information.
       </p>
       <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
         {error && <p className={css.error}>{error}</p>}
+        <div className={css.nameWrapper}>
+          <input
+            id="name"
+            type="text"
+            className={css.input}
+            placeholder="Name"
+            {...register('name')}
+            required
+          />
+          {errors.name && <p>{errors.name.message}</p>}
+        </div>
         <div className={css.emailWrapper}>
           <input
             id="email"
             type="email"
-            placeholder="Email"
             className={css.input}
+            placeholder="Email"
             {...register('email')}
             required
           />
-          {errors.email && <p className={css.error}>{errors.email.message}</p>}
+          {errors.email && <p>{errors.email.message}</p>}
         </div>
         <div className={css.passwordWrapper}>
           <input
@@ -71,6 +88,7 @@ export default function LogIn() {
             {...register('password')}
             required
           />
+          {errors.password && <p>{errors.password.message}</p>}
           <button
             type="button"
             className={css.togglePassword}
@@ -83,7 +101,7 @@ export default function LogIn() {
           </button>
         </div>
         <button className={css.submitButton} type="submit" disabled={isSubmitting}>
-          Log in
+          Sign Up
         </button>
       </form>
     </>

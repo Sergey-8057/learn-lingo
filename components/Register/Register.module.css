@@ -4,6 +4,107 @@
   line-height: 120%;
   letter-spacing: -0.02em;
   margin-bottom: 20px;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.modalText {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 138%;
+  color: rgba(18, 20, 23, 0.8);
+  margin-bottom: 40px;
+}
+
+.nameWrapper {
+  margin-bottom: 18px;
+}
+
+.emailWrapper {
+  margin-bottom: 18px;
+}
+
+.input {
+  display: block;
+  border: 1px solid rgba(18, 20, 23, 0.1);
+  border-radius: 12px;
+  padding: 16px 50px 16px 18px;
+  width: 100%;
+  height: 54px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 138%;
+  color: #121417;
+  outline: none;
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:hover {
+  border-color: var(--button-submit);
+}
+
+.input:focus {
+  border-color: var(--yellow);
+}
+
+.input:active {
+  border-color: var(--yellow);
+  transform: scale(0.995);
+}
+
+.passwordWrapper {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.togglePassword {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(18, 20, 23, 0.5);
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.togglePassword:hover {
+  color: var(--main);
+}
+
+.eyeIcon {
+  fill: currentColor;
+  width: 100%;
+  height: 100%;
+}
+
+.submitButton {
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  height: 60px;
+  background-color: var(--yellow);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 156%;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submitButton:hover,
+.submitButton:focus {
+  background-color: var(--button-submit);
 }
 
 .modalText {

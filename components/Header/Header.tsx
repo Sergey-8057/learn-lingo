@@ -1,19 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
-import { User, signOut } from 'firebase/auth';
-
-import { auth } from '@/firebase/firebase';
-import { observeAuth } from '@/firebase/auth/observeAuth';
+import { useAuth } from '@/context/AuthContext';
 
 import css from './Header.module.css';
 
 const Header = () => {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, logout } = useAuth();
 
   const themes = [
     {
@@ -42,7 +39,7 @@ const Header = () => {
       image: '/block-5.png',
     },
   ];
-  
+
   const [themeIndex, setThemeIndex] = useState(0);
 
   const handleThemeChange = () => {
@@ -57,15 +54,6 @@ const Header = () => {
     root.style.setProperty('--accent-next-color', themes[nextNextIndex].main);
     root.style.setProperty('--accent-light-color', themes[nextIndex].light);
     root.style.setProperty('--hero-image', `url(${themes[nextIndex].image})`);
-  };
-
-  useEffect(() => {
-    const unsubscribe = observeAuth(setUser);
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
   };
 
   return (
@@ -99,7 +87,7 @@ const Header = () => {
             <Link href="/teachers">Teachers</Link>
           </li>
 
-          {/* ✅ Favorites — только для авторизованных */}
+          {/* ✅ Favorites — only for authorized users */}
           {user && (
             <li
               className={clsx(css.navigationItem, {
@@ -114,7 +102,7 @@ const Header = () => {
 
       {/* Auth section */}
       {!user ? (
-        /* 🔓 НЕ авторизован */
+        /* 🔓 NOT authorized */
         <div className={css.authLink}>
           <Link href="/auth/login" className={css.LogInLink}>
             <svg className={css.iconLogIn} width="20" height="20" aria-hidden="true">
@@ -128,13 +116,18 @@ const Header = () => {
           </Link>
         </div>
       ) : (
-        /* 🔒 Авторизован */
-        <button onClick={handleLogout} className={css.LogInLink}>
-          <svg className={css.iconLogOut} width="20" height="20" aria-hidden="true">
-            <use href="/symbol-defs.svg#icon-log-out" />
-          </svg>
-          Log out
-        </button>
+        /* 🔒 Authorized */
+        <div className={css.userBox}>
+          <span className={css.helloText}>
+            Hello, <strong>{user.name}</strong>
+          </span>
+          <button onClick={logout} className={css.LogInLink}>
+            Log out
+            <svg className={css.iconLogOut} width="20" height="20" aria-hidden="true">
+              <use href="/symbol-defs.svg#icon-log-out" />
+            </svg>
+          </button>
+        </div>
       )}
     </header>
   );
