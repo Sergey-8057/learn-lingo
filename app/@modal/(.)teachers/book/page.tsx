@@ -1,6 +1,6 @@
-import dynamic from 'next/dynamic';
+'use client';
 
-const BookClient = dynamic(() => import('./BookClient'), { ssr: false });
+import BookClient from './BookClient';
 
 export default function BookModalPage() {
   return <BookClient />;
