@@ -1,24 +1,90 @@
-import { ref, get } from 'firebase/database';
+import { ref, get, query, limitToFirst, orderByKey, startAt } from 'firebase/database';
 import { database } from '@/firebase/firebase';
 
-export type Teacher = {
-  name: string;
-  language: string;
-  price: number;
-  rating: number;
+type Review = {
+  comment: string;
+  reviewer_name: string;
+  reviewer_rating: number;
 };
 
-export const getTeachers = async (): Promise<Teacher[]> => {
-  const snapshot = await get(ref(database, 'teachers'));
+export type Teacher = {
+  id: string;
+  avatar_url: string;
+  name: string;
+  surname: string;
+  languages: string[];
+  lessons_done: number;
+  price_per_hour: number;
+  rating: number;
+  lesson_info: string;
+  conditions: string[];
+  levels: string[];
+  experience: string;
+  reviews: Review[];
+};
 
-  if (!snapshot.exists()) {
-    return [];
+type GetTeachersResult = {
+  teachers: Teacher[];
+  lastKey: string | null;
+};
+
+export const getTeachers = async (
+  limit: number,
+  lastKey?: string | null
+): Promise<GetTeachersResult> => {
+  try {
+    let teachersQuery;
+
+    if (lastKey) {
+      // Для Realtime Database используем startAt с последнего ключа + 1
+      // Но сначала получим все данные и будем фильтровать на клиенте
+      teachersQuery = query(
+        ref(database, 'teachers'),
+        orderByKey(),
+        startAt(lastKey),
+        limitToFirst(limit + 1) // +1 чтобы исключить последний уже загруженный элемент
+      );
+    } else {
+      teachersQuery = query(
+        ref(database, 'teachers'), 
+        orderByKey(), 
+        limitToFirst(limit)
+      );
+    }
+
+    const snapshot = await get(teachersQuery);
+
+    if (!snapshot.exists()) {
+      return { teachers: [], lastKey: null };
+    }
+
+    const data = snapshot.val();
+    const keys = Object.keys(data);
+    
+    let teachers: Teacher[] = [];
+    
+    if (lastKey) {
+      // Исключаем первый элемент, так как это lastKey
+      const filteredKeys = keys.slice(1);
+      teachers = filteredKeys.map(key => ({
+        id: key,
+        ...data[key]
+      }));
+    } else {
+      teachers = keys.map(key => ({
+        id: key,
+        ...data[key]
+      }));
+    }
+
+    const newLastKey = teachers.length > 0 ? teachers[teachers.length - 1].id : null;
+
+    return {
+      teachers,
+      lastKey: newLastKey,
+    };
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    return { teachers: [], lastKey: null };
   }
-
-  const data = snapshot.val();
-
-  return Object.entries(data).map(([id, teacher]) => ({
-    id,
-    ...(teacher as Omit<Teacher, 'id'>),
-  }));
 };
