@@ -1,10 +1,5 @@
-import Modal from '@/components/Modal/Modal';
-import Book from '@/components/Book/Book';
+import BookClient from './BookClient';
 
 export default function BookModalPage() {
-  return (
-    <Modal>
-      <Book/>
-    </Modal>
-  );
+  return <BookClient />;
 }
