@@ -80,15 +80,16 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🌐 Deployment
 
-The project is deployed using **GitHub Pages**.
+The project is deployed using **Vercel**.
 
-🔗 **Live Demo:** *link will be added after deployment*
+🔗 **Live Demo:** https://learn-lingo-three-chi.vercel.app/
 
 ---
 
 ## 🖼 Screenshots
 
-*Screenshots will be added here*
+![Home](/screenshots/home.png)
+![Teachers](/screenshots/teachers.png)
 
 ---
 
