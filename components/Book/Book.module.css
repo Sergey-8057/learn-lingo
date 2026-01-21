@@ -1,0 +1,164 @@
+.modalTitle {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.modalText {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 138%;
+  color: rgba(18, 20, 23, 0.8);
+  margin-bottom: 20px;
+}
+
+.teacherInfo {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.teacherPhoto {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.teacherText {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 133%;
+  color: #8a8a89;
+  margin-bottom: 4px;
+}
+
+.teacherName {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+.nameWrapper,
+.emailWrapper {
+  margin-bottom: 18px;
+}
+
+.reasonTitle {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 133%;
+  margin-bottom: 20px;
+}
+
+.radioWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-left: 10px;
+  margin-bottom: 40px;
+}
+
+.radioInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  line-height: 138%;
+}
+
+.radioInput input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radioInput input[type='radio'] + .radioText::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(18, 20, 23, 0.2);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: transparent;
+}
+
+.radioInput input[type='radio']:checked + .radioText::before {
+  border-color: var(--yellow);
+  background-color: var(--yellow);
+  box-shadow: inset 0 0 0 5px white;
+}
+
+.radioInput:hover input[type='radio'] + .radioText::before {
+  border-color: var(--light-yellow);
+}
+
+.radioText {
+  display: inline-flex;
+  align-items: center;
+}
+
+.input {
+  display: block;
+  border: 1px solid rgba(18, 20, 23, 0.1);
+  border-radius: 12px;
+  padding: 16px 50px 16px 18px;
+  width: 100%;
+  height: 54px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 138%;
+  color: #121417;
+  outline: none;
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:hover {
+  border-color: var(--button-submit);
+}
+
+.input:focus {
+  border-color: var(--yellow);
+}
+
+.input:active {
+  border-color: var(--yellow);
+  transform: scale(0.995);
+}
+
+.passwordWrapper {
+  margin-bottom: 40px;
+}
+
+.submitButton {
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  height: 60px;
+  background-color: var(--yellow);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 156%;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submitButton:hover,
+.submitButton:focus {
+  background-color: var(--button-submit);
+}
+
+.errorText {
+  color: red;
+}

@@ -1,66 +1,78 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTeachers, Teacher } from '@/firebase/db/teachers';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import clsx from 'clsx';
-import toast from 'react-hot-toast';
 
 import { useAuth } from '@/context/AuthContext';
-import css from './teachers.module.css';
+import { getTeachersByIds } from '@/firebase/db/getTeachersByIds';
+import { Teacher } from '@/firebase/db/teachers';
 
-export default function TeachersPage() {
-  const LIMIT = 4;
+import css from '@/app/teachers/teachers.module.css';
 
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [lastKey, setLastKey] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+const LIMIT = 4;
+
+export default function FavoritesPage() {
+  const { user, loading, toggleFavorite } = useAuth();
+  const router = useRouter();
+
+  const [allTeachers, setAllTeachers] = useState<Teacher[]>([]);
+  const [visibleTeachers, setVisibleTeachers] = useState<Teacher[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [error, setError] = useState<string | null>(null);
-  const { user, toggleFavorite } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadInitialTeachers = async () => {
-      setIsInitialLoading(true);
-      setError(null);
-      try {
-        const { teachers, lastKey } = await getTeachers(LIMIT);
-        setTeachers(teachers);
-        setLastKey(lastKey);
-        setHasMore(teachers.length === LIMIT);
-      } catch (err) {
-        setError('Failed to load teachers');
-        console.error(err);
-      } finally {
-        setIsInitialLoading(false);
-      }
+    if (!loading && !user) {
+      router.replace('/auth/login');
+    }
+  }, [loading, user, router]);
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (!user) return;
+
+      setIsLoading(true);
+
+      const data = await getTeachersByIds(user.favorites);
+
+      setAllTeachers(data);
+      setVisibleTeachers(data.slice(0, LIMIT));
+
+      setIsLoading(false);
     };
 
-    loadInitialTeachers();
-  }, []);
+    loadFavorites();
+  }, [user]);
 
-  const loadMoreTeachers = async () => {
-    if (!lastKey || isLoadingMore) return;
-
-    setIsLoadingMore(true);
-    setError(null);
-
-    try {
-      const { teachers: newTeachers, lastKey: newLastKey } = await getTeachers(LIMIT, lastKey);
-
-      setTeachers(prev => [...prev, ...newTeachers]);
-      setLastKey(newLastKey);
-      setHasMore(newTeachers.length === LIMIT);
-    } catch (err) {
-      setError('Failed to load more teachers');
-      console.error(err);
-    } finally {
-      setIsLoadingMore(false);
-    }
+  const loadMore = () => {
+    setVisibleTeachers(prev => allTeachers.slice(0, prev.length + LIMIT));
   };
+
+  const hasMore = visibleTeachers.length < allTeachers.length;
+
+  const toggleTeacher = (id: string) => {
+    setExpandedIds(prev => {
+      const next = new Set(prev);
+
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+
+      return next;
+    });
+  };
+
+  if (loading || isLoading) {
+    return <p style={{ padding: 32 }}>Loading favorites...</p>;
+  }
+
+  if (allTeachers.length === 0) {
+    return <p style={{ padding: 32 }}>You have no favorite teachers yet.</p>;
+  }
 
   const THEME_COLORS = [
     'var(--yellow)',
@@ -70,55 +82,10 @@ export default function TeachersPage() {
     'var(--pink)',
   ];
 
-  const toggleTeacher = (id: string) => {
-    setExpandedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
-  if (isInitialLoading) {
-    return (
-      <div className={css.loadingContainer}>
-        <p>Loading teachers...</p>
-      </div>
-    );
-  }
-
-  if (error && teachers.length === 0) {
-    return (
-      <div className={css.errorContainer}>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()} className={css.retryButton}>
-          Try again
-        </button>
-      </div>
-    );
-  }
-
-  const handleFavoriteClick = async (teacherId: string) => {
-    if (!user) {
-      toast.error('This feature is available only for authorized users');
-      return;
-    }
-
-    try {
-      await toggleFavorite(teacherId);
-    } catch (err) {
-      toast.error('Failed to update favorites');
-      console.error(err);
-    }
-  };
-
   return (
     <div className={css.container}>
       <ul className={css.list}>
-        {teachers.map(teacher => {
+        {visibleTeachers.map(teacher => {
           const isExpanded = expandedIds.has(teacher.id);
 
           return (
@@ -138,39 +105,21 @@ export default function TeachersPage() {
               <div className={css.teacherInfo}>
                 <div className={css.lineUp}>
                   <div className={css.lineUpInfo}>
-                    <div className={css.lineUpIconText}>
-                      <svg className={css.iconBookOpen} width="20" height="20" aria-hidden="true">
-                        <use href="/symbol-defs.svg#icon-book-open" />
-                      </svg>
-                      <p className={clsx(css.lineUpText, css.vertLine)}>Lessons online</p>
-                    </div>
-                    <p className={clsx(css.lineUpText, css.vertLineCentr)}>
-                      Lessons done: {teacher.lessons_done}
-                    </p>
-                    <div className={css.lineUpIconText}>
-                      <svg className={css.iconStar} width="16" height="16">
-                        <use href="/symbol-defs.svg#icon-star" />
-                      </svg>
-                      <p className={clsx(css.lineUpText, css.vertLine)}>Rating: {teacher.rating}</p>
-                    </div>
+                    <p className={css.lineUpText}>Lessons done: {teacher.lessons_done}</p>
+                    <p className={css.lineUpText}>Rating: {teacher.rating}</p>
                     <p className={css.lineUpText}>
                       Price / 1 hour:{' '}
                       <span className={css.lineUpPrice}>{teacher.price_per_hour}$</span>
                     </p>
                   </div>
+
                   <button
                     type="button"
-                    onClick={() => handleFavoriteClick(teacher.id)}
+                    onClick={() => toggleFavorite(teacher.id)}
                     className={css.heartButton}
                   >
-                    <svg className={css.iconHeart} width="26" height="26" aria-hidden="true">
-                      <use
-                        href={
-                          user?.favorites.includes(teacher.id)
-                            ? '/symbol-defs.svg#icon-heart-active'
-                            : '/symbol-defs.svg#icon-heart'
-                        }
-                      />
+                    <svg className={css.iconHeart} width="26" height="26">
+                      <use href="/symbol-defs.svg#icon-heart-active" />
                     </svg>
                   </button>
                 </div>
@@ -182,15 +131,11 @@ export default function TeachersPage() {
                 <div className={css.teacherContCondit}>
                   <p>
                     <span className={css.teacherCondit}>Speaks: </span>
-                    <span className={css.teacherLanguages}>{teacher.languages.join(', ')}</span>
+                    {teacher.languages.join(', ')}
                   </p>
                   <p>
                     <span className={css.teacherCondit}>Lesson Info: </span>
                     {teacher.lesson_info}
-                  </p>
-                  <p>
-                    <span className={css.teacherCondit}>Conditions: </span>
-                    {teacher.conditions.join(' ')}
                   </p>
                 </div>
 
@@ -236,7 +181,6 @@ export default function TeachersPage() {
                     </span>
                   ))}
                 </div>
-
                 {isExpanded && (
                   <Link
                     href={{
@@ -255,27 +199,12 @@ export default function TeachersPage() {
             </li>
           );
         })}
-
-        {error && teachers.length > 0 && (
-          <div className={css.errorMessage}>
-            <p>{error}</p>
-          </div>
-        )}
-
         {hasMore && (
           <div className={css.loadMoreContainer}>
-            <button
-              onClick={loadMoreTeachers}
-              disabled={isLoadingMore}
-              className={css.loadMoreButton}
-            >
-              {isLoadingMore ? 'Loading...' : 'Load more'}
+            <button onClick={loadMore} className={css.loadMoreButton}>
+              Load more
             </button>
           </div>
-        )}
-
-        {!hasMore && teachers.length > 0 && (
-          <p className={css.noMoreTeachers}>All teachers loaded</p>
         )}
       </ul>
     </div>

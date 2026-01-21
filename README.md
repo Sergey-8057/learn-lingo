@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LearnLingo
 
-## Getting Started
+## 📚 Project Description
 
-First, run the development server:
+**LearnLingo** is a web application for a company that offers online language learning services with professional teachers.
+
+The application consists of three main pages:
+
+* **Home** – presents the company’s advantages and encourages users to start using the service.
+* **Teachers** – displays a list of available language teachers with detailed information and pagination.
+* **Favorites** – a private page where authorized users can view teachers they have added to their favorites.
+
+---
+
+## 🚀 Features
+
+* User registration and authentication (Firebase Auth)
+* Teachers list with detailed teacher cards
+* Pagination with **Load more** functionality
+* Add / remove teachers from **Favorites**
+* Protected routes for authorized users
+* Modal windows
+* Book a trial lesson
+* Data storage using **Firebase Realtime Database**
+
+---
+
+## 🛠 Tech Stack
+
+* **Next.js 13** (App Router)
+* **TypeScript**
+* **React 19**
+* **Firebase** (Authentication & Realtime Database)
+* **CSS Modules**
+* **React Context API**
+* **clsx**
+* **react-hot-toast**
+* **react-hook-form + yup** (form validation)
+
+---
+
+## 📦 Project Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/learn-lingo.git
+cd learn-lingo
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Environment variables
+
+Create a `.env.local` file in the project root and add your Firebase configuration:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=your_database_url
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+### 4. Run the project locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌐 Deployment
 
-## Learn More
+The project is deployed using **GitHub Pages**.
 
-To learn more about Next.js, take a look at the following resources:
+🔗 **Live Demo:** *link will be added after deployment*
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🖼 Screenshots
 
-## Deploy on Vercel
+*Screenshots will be added here*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 👤 Author
+
+**Serhii Shevchenko**
+Junior Frontend Developer
+
+---
+
+## 📄 License
+
+This project is created for educational purposes.

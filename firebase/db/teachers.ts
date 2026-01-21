@@ -36,13 +36,11 @@ export const getTeachers = async (
     let teachersQuery;
 
     if (lastKey) {
-      // Для Realtime Database используем startAt с последнего ключа + 1
-      // Но сначала получим все данные и будем фильтровать на клиенте
       teachersQuery = query(
         ref(database, 'teachers'),
         orderByKey(),
         startAt(lastKey),
-        limitToFirst(limit + 1) // +1 чтобы исключить последний уже загруженный элемент
+        limitToFirst(limit + 1)
       );
     } else {
       teachersQuery = query(
@@ -64,7 +62,6 @@ export const getTeachers = async (
     let teachers: Teacher[] = [];
     
     if (lastKey) {
-      // Исключаем первый элемент, так как это lastKey
       const filteredKeys = keys.slice(1);
       teachers = filteredKeys.map(key => ({
         id: key,

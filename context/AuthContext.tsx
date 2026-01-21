@@ -9,6 +9,8 @@ import { loginUser } from '@/firebase/auth/login';
 import { registerUser } from '@/firebase/auth/register';
 import { logoutUser } from '@/firebase/auth/logout';
 import { saveUserToDb } from '@/firebase/db/users';
+import { toggleFavoriteTeacher } from '@/firebase/db/favorites';
+
 
 import { UserProfile } from '@/types/user';
 
@@ -24,6 +26,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
+  toggleFavorite: (teacherId: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -76,8 +79,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  const toggleFavorite = async (teacherId: string) => {
+    if (!user) return;
+
+    const updatedFavorites = await toggleFavoriteTeacher(user.uid, teacherId);
+
+    setUser(prev =>
+      prev
+        ? {
+            ...prev,
+            favorites: updatedFavorites,
+          }
+        : prev
+    );
+  };
+
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, toggleFavorite }}>
       {children}
     </AuthContext.Provider>
   );

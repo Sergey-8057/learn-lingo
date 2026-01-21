@@ -272,6 +272,7 @@
 }
 
 .loadMoreButton {
+  display: block;
   padding: 16px 48px;
   border-radius: 12px;
   font-size: 18px;
@@ -279,6 +280,7 @@
   cursor: pointer;
   background-color: var(--accent-color);
   border: none;
+  margin: 0 auto;
   transition: background-color 250ms ease;
 }
 
@@ -289,4 +291,15 @@
 .loadMoreButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.heartButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.heartButton:hover {
+  transform: scale(1.1);
 }
