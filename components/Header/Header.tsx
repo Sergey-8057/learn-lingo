@@ -71,30 +71,39 @@ const Header = () => {
       {/* Navigation */}
       <nav>
         <ul className={css.navigation}>
-          <li
-            className={clsx(css.navigationItem, {
-              [css.isActive]: pathname === '/',
-            })}
-          >
-            <Link href="/">Home</Link>
+          <li>
+            <Link
+              href="/"
+              className={clsx(css.navLink, {
+                [css.isActive]: pathname === '/',
+              })}
+            >
+              Home
+            </Link>
           </li>
 
-          <li
-            className={clsx(css.navigationItem, {
-              [css.isActive]: pathname === '/teachers',
-            })}
-          >
-            <Link href="/teachers">Teachers</Link>
+          <li>
+            <Link
+              href="/teachers"
+              className={clsx(css.navLink, {
+                [css.isActive]: pathname === '/teachers',
+              })}
+            >
+              Teachers
+            </Link>
           </li>
 
           {/* ✅ Favorites — only for authorized users */}
           {user && (
-            <li
-              className={clsx(css.navigationItem, {
-                [css.isActive]: pathname === '/favorites',
-              })}
-            >
-              <Link href="/favorites">Favorites</Link>
+            <li>
+              <Link
+                href="/favorites"
+                className={clsx(css.navLink, {
+                  [css.isActive]: pathname === '/favorites',
+                })}
+              >
+                Favorites
+              </Link>
             </li>
           )}
         </ul>
