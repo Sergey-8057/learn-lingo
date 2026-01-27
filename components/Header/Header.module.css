@@ -119,3 +119,26 @@
   background-color: transparent;
   cursor: pointer;
 }
+
+.authLink, .userBox {
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.registrLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LogInLink {
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+
+.userBox .LogInLink {
+  height: auto;
+  padding: 12px 0;
+}
