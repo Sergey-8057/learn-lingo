@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/navigation';
-
+import toast from 'react-hot-toast';
 
 import { registerSchema } from '@/validation/registerSchema';
 import { RegisterFormValues } from '@/types/auth';
@@ -18,6 +18,7 @@ export default function Register() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -26,7 +27,8 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
+    reset,
   } = useForm<RegisterFormValues>({
     resolver: yupResolver(registerSchema),
   });
@@ -34,6 +36,8 @@ export default function Register() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setError(null);
+      setIsLoading(true);
+
       const user = await registerUser(data.email, data.password);
 
       await saveUserToDb(user.uid, {
@@ -41,9 +45,24 @@ export default function Register() {
         email: data.email,
         favorites: [],
       });
-      router.push('/');
+
+      toast.success('Registration successful! Welcome!', {
+        duration: 3000,
+        position: 'top-center',
+      });
+
+      reset();
+      router.back();
+      router.refresh();
     } catch (error) {
-      setError(getAuthErrorMessage(error));
+      const errorMessage = getAuthErrorMessage(error);
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: 'top-center',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,37 +79,37 @@ export default function Register() {
           <input
             id="name"
             type="text"
-            autoComplete="name"
             className={css.input}
             placeholder="Name"
+            autoComplete="name"
             {...register('name')}
             required
           />
-          {errors.name && <p>{errors.name.message}</p>}
+          {errors.name && <p className={css.errorText}>{errors.name.message}</p>}
         </div>
         <div className={css.emailWrapper}>
           <input
             id="email"
             type="email"
-            autoComplete="email"
             className={css.input}
             placeholder="Email"
+            autoComplete="email"
             {...register('email')}
             required
           />
-          {errors.email && <p>{errors.email.message}</p>}
+          {errors.email && <p className={css.errorText}>{errors.email.message}</p>}
         </div>
         <div className={css.passwordWrapper}>
           <input
             id="password"
             type={showPassword ? 'text' : 'password'}
-            autoComplete="new-password"
             className={css.input}
             placeholder="Password"
+            autoComplete="new-password"
             {...register('password')}
             required
           />
-          {errors.password && <p>{errors.password.message}</p>}
+          {errors.password && <p className={css.errorText}>{errors.password.message}</p>}
           <button
             type="button"
             className={css.togglePassword}
@@ -102,8 +121,8 @@ export default function Register() {
             </svg>
           </button>
         </div>
-        <button className={css.submitButton} type="submit" disabled={isSubmitting}>
-          Sign Up
+        <button className={css.submitButton} type="submit" disabled={isLoading}>
+          {isLoading ? 'Signing up...' : 'Sign Up'}
         </button>
       </form>
     </>

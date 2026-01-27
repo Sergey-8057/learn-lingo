@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
 import { auth } from '@/firebase/firebase';
 import { getUserFromDb } from '@/firebase/db/getUserFromDb';
@@ -10,7 +10,6 @@ import { registerUser } from '@/firebase/auth/register';
 import { logoutUser } from '@/firebase/auth/logout';
 import { saveUserToDb } from '@/firebase/db/users';
 import { toggleFavoriteTeacher } from '@/firebase/db/favorites';
-
 
 import { UserProfile } from '@/types/user';
 
@@ -27,6 +26,7 @@ type AuthContextType = {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   toggleFavorite: (teacherId: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -35,14 +35,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
-      if (!firebaseUser) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
+  const loadUser = async (firebaseUser: FirebaseUser | null) => {
+    if (!firebaseUser) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
 
+    try {
       const dbUser = await getUserFromDb(firebaseUser.uid);
 
       if (dbUser) {
@@ -53,24 +53,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           favorites: dbUser.favorites ?? [],
         });
       }
-
+    } catch (error) {
+      console.error('Error loading user:', error);
+    } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
+      await loadUser(firebaseUser);
     });
 
     return unsubscribe;
   }, []);
 
+  const refreshUser = async () => {
+    const firebaseUser = auth.currentUser;
+    await loadUser(firebaseUser);
+  };
+
   const login = async (email: string, password: string) => {
-    const firebaseUser = await loginUser(email, password);
-
-    const dbUser = await getUserFromDb(firebaseUser.uid);
-
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email!,
-      name: dbUser.name,
-      favorites: dbUser.favorites ?? [],
-    });
+    await loginUser(email, password);
+    await refreshUser();
   };
 
   const register = async ({ name, email, password }: RegisterData) => {
@@ -81,6 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       favorites: [],
     });
+
+    await refreshUser();
   };
 
   const logout = async () => {
@@ -103,9 +110,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, toggleFavorite }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        toggleFavorite,
+        refreshUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
