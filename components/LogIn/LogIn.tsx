@@ -36,7 +36,6 @@ export default function LogIn() {
       setError(null);
       await login(data.email, data.password);
       router.push('/');
-      router.back();
     } catch (err) {
       setError(getAuthErrorMessage(err));
     }
@@ -56,6 +55,7 @@ export default function LogIn() {
             id="email"
             type="email"
             placeholder="Email"
+            autoComplete="email"
             className={css.input}
             {...register('email')}
             required
@@ -66,6 +66,7 @@ export default function LogIn() {
           <input
             id="password"
             type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
             className={css.input}
             placeholder="Password"
             {...register('password')}

@@ -61,7 +61,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    await loginUser(email, password);
+    const firebaseUser = await loginUser(email, password);
+
+    const dbUser = await getUserFromDb(firebaseUser.uid);
+
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email!,
+      name: dbUser.name,
+      favorites: dbUser.favorites ?? [],
+    });
   };
 
   const register = async ({ name, email, password }: RegisterData) => {

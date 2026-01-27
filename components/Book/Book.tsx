@@ -119,13 +119,13 @@ export default function Book() {
           ))}
         </div>
 
-
         <div className={css.nameWrapper}>
           <input
             id="name"
             type="text"
             className={`${css.input} ${errors.name ? css.inputError : ''}`}
             placeholder="Full Name"
+            autoComplete="name"
             {...register('name')}
           />
           {errors.name && <span className={css.errorText}>{errors.name.message}</span>}
@@ -137,6 +137,7 @@ export default function Book() {
             type="email"
             className={`${css.input} ${errors.email ? css.inputError : ''}`}
             placeholder="Email"
+            autoComplete="email"
             {...register('email')}
           />
           {errors.email && <span className={css.errorText}>{errors.email.message}</span>}
@@ -148,6 +149,7 @@ export default function Book() {
             type="tel"
             className={`${css.input} ${errors.phone ? css.inputError : ''}`}
             placeholder="Phone number"
+            autoComplete="tel"
             {...register('phone')}
           />
           {errors.phone && <span className={css.errorText}>{errors.phone.message}</span>}

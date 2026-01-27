@@ -42,7 +42,6 @@ export default function Register() {
         favorites: [],
       });
       router.push('/');
-      router.back();    
     } catch (error) {
       setError(getAuthErrorMessage(error));
     }
@@ -61,6 +60,7 @@ export default function Register() {
           <input
             id="name"
             type="text"
+            autoComplete="name"
             className={css.input}
             placeholder="Name"
             {...register('name')}
@@ -72,6 +72,7 @@ export default function Register() {
           <input
             id="email"
             type="email"
+            autoComplete="email"
             className={css.input}
             placeholder="Email"
             {...register('email')}
@@ -83,6 +84,7 @@ export default function Register() {
           <input
             id="password"
             type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
             className={css.input}
             placeholder="Password"
             {...register('password')}

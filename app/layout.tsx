@@ -12,6 +12,8 @@ const roboto = Roboto({
   style: ['normal', 'italic'],
   variable: '--font-family',
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +29,16 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={roboto.variable}>
+      <head>
+        <link
+          rel="preload"
+          href={roboto.style.fontFamily}
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${roboto.variable} container`}>
         <ToastProvider />
         <AuthProvider>
