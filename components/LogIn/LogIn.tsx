@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 
 import { loginSchema } from '@/validation/loginSchema';
 import { LoginFormValues } from '@/types/auth';
@@ -17,7 +16,6 @@ export default function LogIn() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -28,8 +26,7 @@ export default function LogIn() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: yupResolver(loginSchema),
   });
@@ -37,22 +34,11 @@ export default function LogIn() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setError(null);
-      setIsLoading(true);
-
       await login(data.email, data.password);
-
-      reset();
+      router.push('/');
       router.back();
-      router.refresh();
     } catch (err) {
-      const errorMessage = getAuthErrorMessage(err);
-      setError(errorMessage);
-      toast.error(errorMessage, {
-        duration: 4000,
-        position: 'top-center',
-      });
-    } finally {
-      setIsLoading(false);
+      setError(getAuthErrorMessage(err));
     }
   };
 
@@ -70,20 +56,20 @@ export default function LogIn() {
             id="email"
             type="email"
             placeholder="Email"
-            className={css.input}
             autoComplete="email"
+            className={css.input}
             {...register('email')}
             required
           />
-          {errors.email && <p className={css.errorText}>{errors.email.message}</p>}
+          {errors.email && <p className={css.error}>{errors.email.message}</p>}
         </div>
         <div className={css.passwordWrapper}>
           <input
             id="password"
             type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
             className={css.input}
             placeholder="Password"
-            autoComplete="current-password"
             {...register('password')}
             required
           />
@@ -98,8 +84,8 @@ export default function LogIn() {
             </svg>
           </button>
         </div>
-        <button className={css.submitButton} type="submit" disabled={isLoading}>
-          {isLoading ? 'Logging in...' : 'Log in'}
+        <button className={css.submitButton} type="submit" disabled={isSubmitting}>
+          Log in
         </button>
       </form>
     </>
