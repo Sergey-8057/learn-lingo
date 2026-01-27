@@ -9,7 +9,6 @@ import { registerSchema } from '@/validation/registerSchema';
 import { RegisterFormValues } from '@/types/auth';
 import { useAuth } from '@/context/AuthContext';
 import { getAuthErrorMessage } from '@/firebase/auth/errors';
-// import { saveUserToDb } from '@/firebase/db/users';
 
 import css from './Register.module.css';
 
