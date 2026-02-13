@@ -1,7 +1,10 @@
-'use client';
-
-import BookClient from './BookClient';
+import Modal from '@/components/Modal/Modal';
+import Book from '@/components/Book/Book';
 
 export default function BookModalPage() {
-  return <BookClient />;
+  return (
+    <Modal>
+      <Book />
+    </Modal>
+  );
 }
