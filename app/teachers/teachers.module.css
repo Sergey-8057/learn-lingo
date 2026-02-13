@@ -1,6 +1,6 @@
 .list {
   padding: 32px 64px 64px 64px;
-  border-radius: 30px;
+  border-radius: 0 0 30px 30px;
   background-color: var(--grey);
 }
 

@@ -85,3 +85,23 @@ export const getTeachers = async (
     return { teachers: [], lastKey: null };
   }
 };
+
+export const getAllTeachers = async (): Promise<Teacher[]> => {
+  try {
+    const snapshot = await get(ref(database, 'teachers'));
+
+    if (!snapshot.exists()) {
+      return [];
+    }
+
+    const data = snapshot.val();
+
+    return Object.keys(data).map(key => ({
+      id: key,
+      ...data[key],
+    }));
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    return [];
+  }
+};
